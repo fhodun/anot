@@ -13,7 +13,6 @@ import (
 
 func main() {
 	config := config.GetConfig()
-	println(config.Prefix)
 	dg, err := discordgo.New("Bot " + config.DiscordToken)
 	if err != nil {
 		log.Fatal("[FATAL ERROR] Discord session creation failed, ", err)
