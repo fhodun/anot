@@ -1,7 +1,6 @@
 package main
 
 import (
-	"os"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -10,13 +9,8 @@ import (
 )
 
 func main() {
+	config.InitLogConfig()
 	config := config.GetConfig()
-
-	log.SetFormatter(&log.TextFormatter{
-		ForceColors: true,
-	})
-	//log.SetFormatter(&log.JSONFormatter{})
-	log.SetOutput(os.Stdout)
 
 	dg, err := discordgo.New("Bot " + config.DiscordToken)
 	if err != nil {
