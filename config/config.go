@@ -1,39 +1,39 @@
 package config
 
 import (
-    "github.com/joho/godotenv"
-    "log"
-    "os"
+	"github.com/joho/godotenv"
+	log "github.com/sirupsen/logrus"
+	"os"
 )
 
 // Config dupa
 type Config struct {
-    DiscordToken string
-    Prefix       string
+	DiscordToken string
+	Prefix       string
 }
 
 // GetConfig dupa
 func GetConfig() *Config {
-    err := godotenv.Load()
-    if err != nil {
-        log.Fatal("[ERROR] Unsuccessful loading .env, ", err)
-    }
+	err := godotenv.Load()
+	if err != nil {
+		log.Warn("Unsuccessful loading .env, ", err)
+	}
 
-    discordToken, discordTokenExists := os.LookupEnv("DISCORD_TOKEN")
-    prefix, prefixExists := os.LookupEnv("PREFIX")
-    
-    if !discordTokenExists {
-        log.Fatal("[FATAL ERROR] No discord token detected")
-    }
-    if !prefixExists {
-        // TODO: need repair and make this better
-        //println("[INFO] No prefix detected, default '>' will be used")
-        prefix = ">"
-    }
+	discordToken, discordTokenExists := os.LookupEnv("DISCORD_TOKEN")
+	prefix, prefixExists := os.LookupEnv("PREFIX")
 
-    config := &Config{
-        DiscordToken: discordToken,
-        Prefix:       prefix,
-    }
-    return config
+	if !discordTokenExists {
+		log.Fatal("No discord token detected")
+	}
+	if !prefixExists {
+		// TODO: need repair and make this better
+		//log.Info("No prefix detected, default '>' will be used")
+		prefix = ">"
+	}
+
+	config := &Config{
+		DiscordToken: discordToken,
+		Prefix:       prefix,
+	}
+	return config
 }

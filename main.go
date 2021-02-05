@@ -1,45 +1,48 @@
 package main
 
 import (
-	"log"
 	"os"
-	"os/signal"
-	"syscall"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/fhodun/anot/config"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
 	config := config.GetConfig()
+
+	log.SetFormatter(&log.TextFormatter{
+		ForceColors: true,
+	})
+	//log.SetFormatter(&log.JSONFormatter{})
+	log.SetOutput(os.Stdout)
+
 	dg, err := discordgo.New("Bot " + config.DiscordToken)
 	if err != nil {
-		log.Fatal("[FATAL ERROR] Discord session creation failed, ", err)
+		log.Fatal("Discord session creation failed")
 	}
 	err = dg.Open()
 	if err != nil {
-		log.Fatal("[FATAL ERROR] Unsuccessful opening connection, ", err)
+		log.Fatal("Unsuccessful opening connection")
 	}
+
+	defer dg.Close()
 
 	dg.AddHandler(messageCreate)
 	dg.Identify.Intents = discordgo.IntentsGuildMessages
 
-	println("[INFO] Bot is now running.  Press CTRL-C to exit.")
-	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
-	<-sc
-
-	dg.Close()
+	log.Info("Bot is now running")
+	select {}
 }
 
 func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if (m.Author.ID == s.State.User.ID || !strings.HasPrefix(m.Content, ">")) { return }
+	if m.Author.ID == s.State.User.ID || !strings.HasPrefix(m.Content, ">") {
+		return
+	}
 
 	mContent := m.Content[(len(config.GetConfig().Prefix)):]
-	var args []string
-	args = strings.Split(mContent, ">")
-	
+	args := strings.Split(mContent, ">")
 	cmd := strings.Trim(args[0], " ")
 	arg := args[1]
 
