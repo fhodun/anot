@@ -41,13 +41,17 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	mContent := m.Content[(len(config.GetConfig().Prefix)):]
-	args := strings.Split(mContent, ">")
+	args := strings.Split(m.Content[(len(config.GetConfig().Prefix)):], ">")
 	cmd := strings.Trim(args[0], " ")
 	arg := args[1]
+	msg := args[2]
 
 	if cmd == "anon" {
 		s.ChannelMessageDelete(m.ChannelID, m.ID)
-		s.ChannelMessageSend(m.ChannelID, arg)
+		if arg != "" {
+			s.ChannelMessageSend(arg, msg)
+		} else {
+			s.ChannelMessageSend(m.ChannelID, msg)
+		}
 	}
 }
