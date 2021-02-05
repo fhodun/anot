@@ -36,6 +36,13 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	args := strings.Split(m.Content[(len(config.GetConfig().Prefix)):], ">")
+	
+	if len(args) < 3 {
+		s.ChannelMessageDelete(m.ChannelID, m.ID)
+		s.ChannelMessageSend(m.ChannelID, "Too few arguments")
+		return
+	}
+
 	cmd := strings.Trim(args[0], " ")
 	arg := args[1]
 	msg := args[2]
