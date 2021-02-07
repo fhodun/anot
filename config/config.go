@@ -1,61 +1,34 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
+	"encoding/json"
 	log "github.com/sirupsen/logrus"
 	"os"
 )
 
 // Config dupa
 type Config struct {
-	DiscordToken string
-	Prefix       string
+	Discord struct {
+		Token  string `json:"token"`
+		Prefix string `json:"prefix"`
+	} `json:"discord"`
 }
 
 // InitLogConfig dupa
 func InitLogConfig() {
-	log.SetFormatter(&log.TextFormatter{
-		ForceColors:               true,
-		DisableColors:             false,
-		ForceQuote:                false,
-		DisableQuote:              false,
-		EnvironmentOverrideColors: false,
-		DisableTimestamp:          false,
-		FullTimestamp:             false,
-		TimestampFormat:           "",
-		DisableSorting:            false,
-		SortingFunc: func([]string) {
-		},
-		DisableLevelTruncation: false,
-		PadLevelText:           false,
-		QuoteEmptyFields:       false,
-	})
+	log.SetFormatter(&log.TextFormatter{ForceColors: true})
 	log.SetOutput(os.Stdout)
 }
 
-// GetConfig dupa
-func GetConfig() *Config {
-	InitLogConfig()
-	err := godotenv.Load()
+// LoadConfig dupa
+func LoadConfig() *Config {
+	config := &Config{}
+	configFile, err := os.Open("config.json")
+	defer configFile.Close()
 	if err != nil {
-		log.Warn("Unsuccessful loading .env, ", err)
+		log.Fatal("Unsuccessful opening config file, ", err)
 	}
-
-	discordToken, discordTokenExists := os.LookupEnv("DISCORD_TOKEN")
-	prefix, prefixExists := os.LookupEnv("PREFIX")
-
-	if !discordTokenExists {
-		log.Fatal("No discord token detected")
-	}
-	if !prefixExists {
-		// TODO: need repair and make this better
-		//log.Info("No prefix detected, default '>' will be used")
-		prefix = ">"
-	}
-
-	config := &Config{
-		DiscordToken: discordToken,
-		Prefix:       prefix,
-	}
+	jsonParser := json.NewDecoder(configFile)
+	jsonParser.Decode(&config)
 	return config
 }

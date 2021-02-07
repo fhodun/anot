@@ -10,9 +10,9 @@ import (
 
 func main() {
 	config.InitLogConfig()
-	config := config.GetConfig()
+	config := config.LoadConfig()
 
-	dg, err := discordgo.New("Bot " + config.DiscordToken)
+	dg, err := discordgo.New("Bot " + config.Discord.Token)
 	if err != nil {
 		log.Fatal("Discord session creation failed")
 	}
@@ -35,7 +35,8 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	args := strings.Split(m.Content[(len(config.GetConfig().Prefix)):], ">")
+	// TODO: get prefix value another, more efficient way
+	args := strings.Split(m.Content[(len(config.LoadConfig().Discord.Prefix)):], ">")
 	
 	if len(args) < 3 {
 		s.ChannelMessageDelete(m.ChannelID, m.ID)
