@@ -10,9 +10,9 @@ import (
 
 func main() {
 	config.InitLogConfig()
-	config := config.GetConfig()
+	cfg := config.GetConfig()
 
-	dg, err := discordgo.New("Bot " + config.DiscordToken)
+	dg, err := discordgo.New("Bot " + cfg.DiscordToken)
 	if err != nil {
 		log.Fatal("Discord session creation failed")
 	}
