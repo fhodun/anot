@@ -29,13 +29,12 @@ func GetConfig() *Config {
 	}
 
 	discordToken, discordTokenExists := os.LookupEnv("DISCORD_TOKEN")
-	prefix, prefixExists := os.LookupEnv("PREFIX")
-
+	prefix, prefixExists := os.LookupEnv("DISCORD_PREFIX")
 	if !discordTokenExists {
 		log.Fatal("No discord token detected")
 	}
 	if !prefixExists {
-		log.Info("No prefix detected, default '>' will be used")
+		log.Warn("No prefix detected, default '>' will be used")
 		prefix = ">"
 	}
 
