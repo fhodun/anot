@@ -35,8 +35,9 @@ func messageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
+	// TODO: get prefix value another, more efficient way
 	args := strings.Split(m.Content[(len(config.GetConfig().Prefix)):], ">")
-	
+
 	if len(args) < 3 {
 		s.ChannelMessageDelete(m.ChannelID, m.ID)
 		s.ChannelMessageSend(m.ChannelID, "Too few arguments")

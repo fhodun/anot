@@ -15,20 +15,7 @@ type Config struct {
 // InitLogConfig dupa
 func InitLogConfig() {
 	log.SetFormatter(&log.TextFormatter{
-		ForceColors:               true,
-		DisableColors:             false,
-		ForceQuote:                false,
-		DisableQuote:              false,
-		EnvironmentOverrideColors: false,
-		DisableTimestamp:          false,
-		FullTimestamp:             false,
-		TimestampFormat:           "",
-		DisableSorting:            false,
-		SortingFunc: func([]string) {
-		},
-		DisableLevelTruncation: false,
-		PadLevelText:           false,
-		QuoteEmptyFields:       false,
+		ForceColors: true,
 	})
 	log.SetOutput(os.Stdout)
 }
@@ -48,8 +35,7 @@ func GetConfig() *Config {
 		log.Fatal("No discord token detected")
 	}
 	if !prefixExists {
-		// TODO: need repair and make this better
-		//log.Info("No prefix detected, default '>' will be used")
+		log.Info("No prefix detected, default '>' will be used")
 		prefix = ">"
 	}
 
